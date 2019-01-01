@@ -10,7 +10,10 @@ import logging
 from homeassistant.const import (
     EVENT_HOMEASSISTANT_START, EVENT_HOMEASSISTANT_STOP)
 
-REQUIREMENTS = ['git+git://github.com/Toshik/orangepi_PC_gpio_pyH3.git@master#pyA20==0.2.1']
+REQUIREMENTS = [
+    ('https://github.com/duxingkei33/orangepi_PC_gpio_pyH3/archive/'
+     '8d2095e3cef1b8f8435956a2e4ed17be9fb4c29c.zip')
+    ]
 DOMAIN = "opi_gpio"
 _LOGGER = logging.getLogger(__name__)
 
@@ -19,14 +22,6 @@ _LOGGER = logging.getLogger(__name__)
 def setup(hass, config):
     """Setup the Orange PI GPIO component."""
     from pyA20.gpio import gpio
-
-    def cleanup_gpio(event):
-        """Stuff to do before stopping."""
-        #GPIO.cleanup()
-
-    def prepare_gpio(event):
-        """Stuff to do when home assistant starts."""
-        hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, cleanup_gpio)
 
     hass.bus.listen_once(EVENT_HOMEASSISTANT_START, prepare_gpio)
     gpio.init()
@@ -56,13 +51,3 @@ def read_input(port):
     """Read a value from a GPIO."""
     from pyA20.gpio import gpio
     return gpio.input(port)
-
-
-def edge_detect(port, event_callback, bounce):
-    """Add detection for RISING and FALLING events."""
-#    import RPi.GPIO as GPIO
-#    GPIO.add_event_detect(
-#        port,
-#        GPIO.BOTH,
-#        callback=event_callback,
-#        bouncetime=bounce)
